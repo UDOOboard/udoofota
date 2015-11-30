@@ -31,6 +31,8 @@
 #define NACK                    "?"
 #define NAME_OF_BOARD	          "UDOONeo"
 #define M4_FIRMWARE_RECEIVED_FILE	"M4_file.fw"
+#define M4_UPLOADER             "udooneo_m4uploader"
+
 
 enum {
 	TEST = 1,
@@ -116,6 +118,7 @@ int upload (void)
 int DoRemoteCommand (int connfd, int cmd)
 {
 	const char * filename = M4_FIRMWARE_RECEIVED_FILE;
+	const char * uploader = M4_UPLOADER;
 	int fsz;
 	int retValue = 0;
 
@@ -125,7 +128,13 @@ int DoRemoteCommand (int connfd, int cmd)
 		fsz=savefile(connfd, filename);
 		if (fsz > 0) {
 			printf("Received fileSize = %d\n", fsz);
-			int status = system("fw_uploader.sh M4_file.fw");
+      
+      char command[256];
+      strcat(command, uploader);
+      strcat(command," ");
+      strcat(command, filename);
+      
+      int status = system(command);
 			printf ("status = %d\n", status);
 /*
 		    printf("waiting for %s upload....\n", NAME_OF_BOARD);
