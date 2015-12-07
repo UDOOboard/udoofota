@@ -31,7 +31,7 @@
 #define NACK                    "?"
 #define NAME_OF_BOARD	          "UDOONeo"
 #define M4_FIRMWARE_RECEIVED_FILE	"M4_file.fw"
-#define M4_UPLOADER             "udooneo_m4uploader"
+#define M4_UPLOADER             "udooneo-m4uploader"
 
 
 enum {
