@@ -129,11 +129,12 @@ int DoRemoteCommand (int connfd, int cmd)
 		if (fsz > 0) {
 			printf("Received fileSize = %d\n", fsz);
       
-      char command[256];
+      char command[256] = "" ;
       strcat(command, uploader);
       strcat(command," ");
       strcat(command, filename);
       
+      printf("Command = %s\n", command);
       int status = system(command);
 			printf ("status = %d\n", status);
 /*
