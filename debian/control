@@ -1,0 +1,23 @@
+Source: udoofota
+Section: web
+Priority: optional
+Maintainer: Ettore Chimenti <ek5.chimenti@gmail.com>
+Build-Depends: debhelper (>= 9.0.0)
+Standards-Version: 3.9.5
+Homepage: http://www.udoo.org
+#Vcs-Git: git://git.debian.org/collab-maint/udoofota.git
+Vcs-Browser: https://github.com/UDOOboard/udoofota
+
+Package: udoofota-server
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, udooneo-m4uploader
+Description: UDOO Firmware Over the Air Uploader -- Server
+ A little client-server protocol written in C over TCP/IP 
+ to enable uploading via network for UDOO.
+
+Package: udoofota-client
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: UDOO Firmware Over the Air Uploader -- Client
+ A little client-server protocol written in C over TCP/IP 
+ to enable uploading via network for UDOO.

@@ -1,0 +1,39 @@
+.\"                                      Hey, EMACS: -*- nroff -*-
+.\" (C) Copyright 2015 Ettore Chimenti <ek5.chimenti@gmail.com>,
+.\"
+.TH UDOOFOTA 1 "December 15, 2015"
+
+.SH NAME
+udoofota\-client \- UDOO Firmware Over the Air Uploader 
+
+.SH SYNOPSIS
+.B udoofota-client
+.RI [ tcpaddress ]:[ tcpport ][ M4_firmware_file ] 
+.br
+
+.SH DESCRIPTION
+This manual page documents briefly the
+.B udoofota-client
+commands.
+
+.SH ARGUMENTS
+.TP
+.B tcpaddress:tcpport
+Specify the IP address for the target UDOO. TCP port is usually 5152.
+.br
+.TP
+.B M4_firmware_file
+Specify the path of the M4 firmware file.
+.br
+
+.SH OPTIONS
+These programs follow the usual GNU command line syntax, with long
+options starting with two dashes (`-').
+A summary of options is included below.
+.TP
+.B \-h, \-\-help
+Show summary of options.
+.TP
+.B \-v, \-\-version
+Show version of program.
+.br

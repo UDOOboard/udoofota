@@ -1,0 +1,21 @@
+#!/usr/bin/make -f
+# -*- makefile -*-
+
+# Uncomment this to turn on verbose mode.
+#export DH_VERBOSE=1
+
+# This has to be exported to make some magic below work.
+export DH_OPTIONS
+
+
+%:
+	dh $@ 
+
+override_dh_auto_install:
+	mv udooclient udoofota-client
+	mv udooserver udoofota-server
+	dh_auto_install
+
+override_dh_clean:
+	rm -f udoofota-client udoofota-server
+	dh_clean
