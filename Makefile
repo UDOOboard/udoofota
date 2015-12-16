@@ -7,4 +7,4 @@ udooserver: udooserver.c
 	gcc udooserver.c -o udooserver
 
 clean:
-	rm udooclient udooserver
+	rm -rf udooclient udooserver
