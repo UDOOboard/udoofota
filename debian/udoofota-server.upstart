@@ -7,6 +7,7 @@ author "UDOO Team <social@udoo.org>"
 
 env USER=root
 env PATH=/sbin:/bin:/usr/bin
+env LOG=/var/log/udoofota-server.log 
 
 start on local-filesystems
 stop on [06]
@@ -18,20 +19,20 @@ script
     --chuid $USER \
     --start --make-pidfile \
     --pidfile /var/run/udoofota-server.pid \
-    --exec /usr/bin/udoofota-server >> /var/log/udoofota-server.log 2>&1
+    --exec /usr/bin/udoofota-server >> $LOG 2>&1
 end script
 
 pre-start script
-  echo "[`date -u '+%F %T %Z'`] (sys) Starting" >> /var/log/udoofota-server.log
+  echo "[`date -u '+%F %T %Z'`] (sys) Starting" >> $LOG
   test -x /usr/bin/udooneo-m4uploader || 
    { 
-	stop
-	echo "[`date -u '+%F %T %Z'`] (sys) Error: uploader not found" >> /var/log/udoofota-server.log
-	exit 0 
+    stop
+    echo "[`date -u '+%F %T %Z'`] (sys) Error: uploader not found" >> $LOG
+    exit 0 
    } 
 end script
 
 pre-stop script
-  echo "[`date -u '+%Y-%m-%d %T %Z'`] (sys) Stopping" >> /var/log/udoofota-server.log
+  echo "[`date -u '+%Y-%m-%d %T %Z'`] (sys) Stopping" >> $LOG
 end script
  
