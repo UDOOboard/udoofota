@@ -13,7 +13,7 @@ Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}, udooneo-m4uploader
 Description: UDOO Firmware Over the Air Uploader -- Server
  A little client-server protocol written in C over TCP/IP 
- to enable uploading via network for UDOO.
+ to enable uploading via network for UDOO. 
 
 Package: udoofota-client
 Architecture: any
@@ -21,3 +21,9 @@ Depends: ${shlibs:Depends}, ${misc:Depends}
 Description: UDOO Firmware Over the Air Uploader -- Client
  A little client-server protocol written in C over TCP/IP 
  to enable uploading via network for UDOO.
+
+Package: udoofota-serial
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, socat
+Description: UDOO Firmware Over the Air Uploader -- Serial
+ Simply starts a socat server to communicate with UDOO M4 core remotely.

@@ -1,0 +1,34 @@
+#
+# udoofota-serial - server start script
+#
+
+description "UDOO Serial Over The Air Server"  
+author "UDOO Team <social@udoo.org>"
+
+env USER=root
+env PATH=/sbin:/bin:/usr/bin
+env LOG=/var/log/udoofota-serial.log 
+
+start on local-filesystems
+stop on [06]
+
+respawn
+
+exec /usr/bin/socat tcp-l:5151,reuseaddr,fork \
+	     file:/dev/ttyMCC,nonblock,raw,echo=0,waitlock=/var/run/tty >> \
+	     $LOG 2>&1
+
+pre-start script
+  echo "[`date -u '+%F %T %Z'`] (sys) Starting" >> $LOG
+  test -x /usr/bin/socat || 
+   { 
+	stop
+	echo "[`date -u '+%F %T %Z'`] (sys) Error: socat not found" >> $LOG
+	exit 0 
+   } 
+end script
+
+pre-stop script
+  echo "[`date -u '+%Y-%m-%d %T %Z'`] (sys) Stopping" >> $LOG
+end script
+ 

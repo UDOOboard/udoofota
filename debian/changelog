@@ -1,3 +1,9 @@
+udoofota (1.0-2) unstable; urgency=low
+
+  * Added socat server
+
+ -- Ettore Chimenti <ek5.chimenti@gmail.com>  Fri, 29 Jul 2016 11:47:36 +0100
+
 udoofota (1.0-1) unstable; urgency=low
 
   * Initial release 
