@@ -1,3 +1,9 @@
+udoofota (1.1-1) unstable; urgency=low
+
+  * Get uploader status from remote
+
+ -- Ettore Chimenti <ek5.chimenti@gmail.com>  Mon, 29 Aug 2016 17:01:04 +0100
+
 udoofota (1.0-2) unstable; urgency=low
 
   * Added socat server
