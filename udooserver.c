@@ -24,9 +24,9 @@
 
 #define UDOONEO_SERVER_PORT	    5152
 #define BUF_SIZE                256
-#define NMAX_REMOTE_CMD         3
+#define NMAX_REMOTE_CMD         4
 #define MAX_SIZE_REMOTE_CMD			32
-#define VERSION	                "1.0"
+#define VERSION						"1.1"		// added GET_UPLOADER_STATUS
 #define ACK	                    "*"
 #define NACK                    "?"
 #define NAME_OF_BOARD	          "UDOONeo"
@@ -36,15 +36,30 @@
 
 enum {
 	TEST = 1,
-	FW_UPLOADER
+	FW_UPLOADER,
+	GET_UPLOADER_STATUS
 }eRemoteCommandCode;
 
 const char *tabRemoteCmd [NMAX_REMOTE_CMD] = {
 	"NO_CMD",
 	"TEST",
-	"FW_UPLOADER"
+	"FW_UPLOADER",
+	"GET_UPLOADER_STATUS"
 };
 
+int statusUploader = 0;
+const unsigned char strEOF[] = "********????????@@@@@@@@++++++++";
+
+unsigned char ReceivedStrEOF(unsigned char *buff)
+{
+	int i;
+	unsigned char isEOF=1;
+
+	for (i=0; i<strlen(strEOF); i++) {
+		if (buff[i] != strEOF[i]) isEOF=0;
+	}
+	return (isEOF);
+}
 
 int savefile(int connfd, const char * filename)
 {
@@ -63,14 +78,19 @@ int savefile(int connfd, const char * filename)
     memset(buff, '0', sizeof(buff));
     while((bytesReceived = read(connfd, buff, BUF_SIZE)) > 0)
     {
-		//printf("FW uploader task: bytes received %d\n",bytesReceived);
-        fwrite(buff, 1, bytesReceived, fp);
-		if (bytesReceived > 0) totBytesReceived += bytesReceived;
+	    if (bytesReceived == strlen(strEOF)) {
+		    if (ReceivedStrEOF(buff)) {
+			    printf ("received end of file\n");
+			    break;
+		    }
+	    }
+	    fwrite(buff, 1, bytesReceived, fp);
+	    if (bytesReceived > 0) totBytesReceived += bytesReceived;
     }
 
     if(bytesReceived < 0)
     {
-        printf("\n Read Error \n");
+	    printf("\n Read Error \n");
     }
 
     fclose(fp);
@@ -95,7 +115,7 @@ int GetRemoteCommand (int connfd)
 	fsync (connfd);
 
 	if (bytesReceived > 0)
-    {
+	{
 		int i;
 		for (i=0; i<NMAX_REMOTE_CMD; i++) {
 			if(strstr(cmdBuffer, tabRemoteCmd[i]) != NULL) {
@@ -104,7 +124,7 @@ int GetRemoteCommand (int connfd)
 				break;
 			}
 		}
-    }
+	}
 	else cmd = -1;
 
 	return (cmd);
@@ -128,28 +148,29 @@ int DoRemoteCommand (int connfd, int cmd)
 		fsz=savefile(connfd, filename);
 		if (fsz > 0) {
 			printf("Received fileSize = %d\n", fsz);
-      
-      char command[256] = "" ;
-      strcat(command, uploader);
-      strcat(command," ");
-      strcat(command, filename);
-      
-      printf("Command = %s\n", command);
-      int status = system(command);
-			printf ("status = %d\n", status);
-/*
-		    printf("waiting for %s upload....\n", NAME_OF_BOARD);
-			if (upload())
-				write(connfd,ACK,1);
-			else
-				write(connfd,NACK,1);
-*/
+
+			char command[256] = "" ;
+			strcat(command, uploader);
+			strcat(command," ");
+			strcat(command, filename);
+
+			printf("Command = %s\n", command);
+			// cast to unsigned char because command program return unsigned char
+			statusUploader = system(command);
+			statusUploader = WEXITSTATUS(statusUploader);
+			printf ("statusUploader = %d\n", statusUploader);
 		}
 		else {
 			write(connfd,NACK,1);
 			printf("Received file error!!\n");
 			retValue = 1;
 		}
+		break;
+
+	case GET_UPLOADER_STATUS:
+		printf("GET_M4_STATUS received\n");
+		unsigned char stUpld = (unsigned char)statusUploader;
+		write(connfd,&stUpld,1);
 		break;
 
 	case TEST:

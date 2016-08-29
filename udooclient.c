@@ -25,13 +25,24 @@
 //#define PORT 					5152
 #define BUF_SIZE 				256
 #define FW_UPLOADER_CMD 		"FW_UPLOADER\n"
-#define VERSION					"1.0"
+#define GET_UPLOADER_STATUS_CMD	"GET_UPLOADER_STATUS\n"
+#define VERSION					"1.1"			// GET_UPLOADER_STATUS
 #define ACK						'*'
 #define NACK					'?'
 #define NAME_OF_BOARD			"UDOONeo"
 
+#define RETURN_CODE_OK					0
+#define RETURN_CODE_ARGUMENTS_ERROR		1
+#define RETURN_CODE_M4STOP_FAILED		2
+#define RETURN_CODE_M4START_FAILED		3
+
+// sent to server after firmware file
+const unsigned char strEOF[] = "********????????@@@@@@@@++++++++";
+
 int client(const char* filename, const char* remoteSocket)
 {
+
+	unsigned char buff[BUF_SIZE]={0};
 
 	unsigned char *zz =	strchr(remoteSocket,':');
 	if (zz != NULL) *zz++ = 0;
@@ -83,7 +94,6 @@ int client(const char* filename, const char* remoteSocket)
     for (;;)
     {
         /* First read file in chunks of BUF_SIZE bytes */
-        unsigned char buff[BUF_SIZE]={0};
         int nread = fread(buff,1,BUF_SIZE,fp);
         //printf("Bytes read %d \n", nread);
 
@@ -111,6 +121,8 @@ int client(const char* filename, const char* remoteSocket)
 
     printf("%s %d bytes sent\n", NAME_OF_BOARD, sizeOf_FW);
 	fclose (fp);
+
+//#define WAIT_ACK
 #ifdef WAIT_ACK	
 	/* waiting for server acknowlege */
     printf("waiting for %s upload....\n", NAME_OF_BOARD);
@@ -121,6 +133,42 @@ int client(const char* filename, const char* remoteSocket)
 	else
 	    printf("%s upload error !!\n", NAME_OF_BOARD);
 #endif
+
+
+	// -------------------------------------------------------------------
+	// Get uploader status from server
+	// -------------------------------------------------------------------
+	sleep(1);	// for read strEOF string with one read instruction from udooserver 
+	strcpy(buff, strEOF);
+	write(sockfd, buff, strlen(buff));
+
+	/* sending GET_UPLOADER_STATUS command to server */
+	if (write(sockfd, GET_UPLOADER_STATUS_CMD, sizeof(GET_UPLOADER_STATUS_CMD)) < 0) {
+		printf("Send command message to server: error");
+		return 1;
+	}
+
+	/* waiting for server acknowlege */
+	ack=0;
+	read(sockfd, &ack, 1);
+	if (ack != ACK) return (1);
+
+	// get uploader status
+	char uploaderStatus = 0;
+	read(sockfd, &uploaderStatus, 1);
+	switch (uploaderStatus) {
+	case RETURN_CODE_OK:
+		printf("%s M4 Sketch is running\n", NAME_OF_BOARD);
+		break;
+	case RETURN_CODE_M4STOP_FAILED:
+		printf("%s M4 Sketch STOP failed: reboot system !\n", NAME_OF_BOARD);
+		break;
+	case RETURN_CODE_M4START_FAILED:
+		printf("%s M4 Sketch START failed: reboot system !\n", NAME_OF_BOARD);
+		break;
+	}
+	// ----------------------------------------------------------------------
+
 	close (sockfd);
     return 0;
 }
