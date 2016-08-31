@@ -84,7 +84,7 @@ int client(const char* filename, const char* remoteSocket)
     FILE *fp = fopen(filename,"rb");
     if(fp==NULL)
     {
-        printf("File opern error");
+        printf("File open error");
 		close (sockfd);
         return 1;
     }
