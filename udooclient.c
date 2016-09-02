@@ -22,19 +22,21 @@
 #include <arpa/inet.h>
 #include <netdb.h>
 
-//#define PORT 					5152
-#define BUF_SIZE 				256
-#define FW_UPLOADER_CMD 		"FW_UPLOADER\n"
-#define GET_UPLOADER_STATUS_CMD	"GET_UPLOADER_STATUS\n"
-#define VERSION					"1.1"			// GET_UPLOADER_STATUS
-#define ACK						'*'
-#define NACK					'?'
-#define NAME_OF_BOARD			"UDOONeo"
+//#define  PORT                         5152
+#define    BUF_SIZE                     256
+#define    FW_UPLOADER_CMD              "FW_UPLOADER\n"
+#define    GET_UPLOADER_STATUS_CMD      "GET_UPLOADER_STATUS\n"
+#define    VERSION                      "1.1"                    //  GET_UPLOADER_STATUS
+#define    ACK                          '*'
+#define    NACK                         '?'
+#define    NAME_OF_BOARD                "UDOONeo"
 
-#define RETURN_CODE_OK					0
-#define RETURN_CODE_ARGUMENTS_ERROR		1
-#define RETURN_CODE_M4STOP_FAILED		2
-#define RETURN_CODE_M4START_FAILED		3
+#define    RETURN_CODE_OK               0
+#define    RETURN_CODE_ARGUMENTS_ERROR  1
+#define    RETURN_CODE_M4STOP_FAILED    2
+#define    RETURN_CODE_M4START_FAILED   3
+#define    RETURN_CODE_M4UPLOADER_FAIL  4
+#define    RETURN_CODE_LASTSKETCH_FAIL  5
 
 // sent to server after firmware file
 const unsigned char strEOF[] = "********????????@@@@@@@@++++++++";
@@ -60,7 +62,6 @@ int client(const char* filename, const char* remoteSocket)
     serv_addr.sin_family = AF_INET;
     serv_addr.sin_port = htons(atoi(zz));
     serv_addr.sin_addr.s_addr = inet_addr(remoteSocket);
-    //serv_addr.sin_addr.s_addr = inet_addr("127.0.0.1");
 
     /* Attempt a connection */
     if(connect(sockfd, (struct sockaddr *)&serv_addr, sizeof(serv_addr))<0)
@@ -165,6 +166,15 @@ int client(const char* filename, const char* remoteSocket)
 		break;
 	case RETURN_CODE_M4START_FAILED:
 		printf("%s M4 Sketch START failed: reboot system !\n", NAME_OF_BOARD);
+		break;
+	case RETURN_CODE_M4UPLOADER_FAIL:
+		printf("%s M4 Uploader failed: Cannot upload sketch! Check system status. \n", NAME_OF_BOARD);
+		break;
+	case RETURN_CODE_LASTSKETCH_FAIL:
+		printf("%s M4 Uploader failed: Next reboot sketch will not start! \n", NAME_OF_BOARD);
+		break;
+	default:
+		printf("%s Something went wrong: %d - Try uploading again. \n", NAME_OF_BOARD, uploaderStatus);
 		break;
 	}
 	// ----------------------------------------------------------------------
