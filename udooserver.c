@@ -26,7 +26,7 @@
 #define BUF_SIZE                256
 #define NMAX_REMOTE_CMD         4
 #define MAX_SIZE_REMOTE_CMD			32
-#define VERSION						"1.1"		// added GET_UPLOADER_STATUS
+#define VERSION						"1.2"		// added GET_UPLOADER_STATUS
 #define ACK	                    "*"
 #define NACK                    "?"
 #define NAME_OF_BOARD	          "UDOONeo"

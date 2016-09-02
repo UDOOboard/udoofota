@@ -1,3 +1,12 @@
+udoofota (1.2-1) unstable; urgency=low
+
+  * Default port 5152
+  * Add host resolution
+  * Better error handling
+  * Cleaned code
+
+ -- Ettore Chimenti <ek5.chimenti@gmail.com>  Fri, 02 Sep 2016 16:05:09 +0100
+
 udoofota (1.1-1) unstable; urgency=low
 
   * Get uploader status from remote
