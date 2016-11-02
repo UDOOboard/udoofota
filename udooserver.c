@@ -21,6 +21,9 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <netdb.h>
+#ifdef ANDROID
+#include <sys/wait.h>
+#endif
 
 #define UDOONEO_SERVER_PORT	    5152
 #define BUF_SIZE                256
@@ -107,7 +110,7 @@ int GetRemoteCommand (int connfd)
 
 	cmdBuffer[0] = 0;
 	do {
-		bytesReceived = read(connfd, tBuffer, BUF_SIZE);
+		bytesReceived = read(connfd, tBuffer, MAX_SIZE_REMOTE_CMD);
 		//printf ("bytesReceived = %d\r\n", bytesReceived);
 		if (bytesReceived > 0) strcat (cmdBuffer, tBuffer);
 		if ((strchr(tBuffer,0x0D) != NULL) || (strchr(tBuffer,0x0A) != NULL)) break;
