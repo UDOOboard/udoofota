@@ -1,10 +1,10 @@
 all: udooclient udooserver
 
 udooclient: udooclient.c
-	gcc udooclient.c -o udooclient
+	gcc -Wall udooclient.c -o udooclient
 
 udooserver: udooserver.c
-	gcc udooserver.c -o udooserver
+	gcc -Wall udooserver.c -o udooserver
 
 clean:
 	rm -rf udooclient udooserver
