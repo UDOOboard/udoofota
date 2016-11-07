@@ -24,19 +24,18 @@
 
 #ifdef ANDROID
 #include <sys/wait.h>
-#define LOG_TAG "FotaServer"
+#define LOG_TAG "M4FotaServer"
 #include <cutils/log.h>
 #define LogDebug ALOGD
 #define LogError ALOGE
 #define M4_FIRMWARE_RECEIVED_FILE       "/data/m4last.fw"
-#define M4_UPLOADER                     "mqx_upload_on_m4SoloX"
 #else //ANDROID
 #define LogDebug printf
 #define LogError perror
 #define M4_FIRMWARE_RECEIVED_FILE       "M4_file.fw"
-#define M4_UPLOADER                     "udooneo-m4uploader"
 #endif //ANDROID
 
+#define M4_UPLOADER                     "udooneo-m4uploader"
 #define UDOONEO_SERVER_PORT             5152
 #define BUF_SIZE                        256
 #define NMAX_REMOTE_CMD                 4
